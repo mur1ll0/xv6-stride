@@ -4,13 +4,15 @@
 int teste(int pid){
   int i, j;
 
-  for(i=0; i<10;i++){
+  for(i=0; i<5;i++){
     for(j=0; j<200;j++){
-      printf(1, "Processo executando: %d\n", getpid());
+      //printf(1, "Processo executando: %d\n", getpid());
+      printf(1, ".");
+      //procdump();
     }
   }
 
-  printf(1, "TERMINOU %d\n", getpid());
+  printf(1, "\nTERMINOU %d\n", getpid());
 
   exit();
 }

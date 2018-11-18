@@ -91,6 +91,10 @@ found:
   // Definir quantidade padrao de Tickets
   p->tickets = 50;
 
+  //Calcular passo do processo
+  p->passo = (10000/p->tickets);
+  p->passada = p->passo;
+
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -324,34 +328,54 @@ wait(void)
 void
 scheduler(void)
 {
-  struct proc *p;
+  struct proc *p, *vencedor;
   struct cpu *c = mycpu();
   c->proc = 0;
+  int menor;
   
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
-    // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+
+    // Iniciar variavel vencedor
+    vencedor = ptable.proc;
+
+    // Loop over process table looking for process to run.
+    menor = 10000;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
-
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
-
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
+      //Seleciona processo com menor passada, em caso de empate seleciona processo no final da fila
+      if(p->passada <= menor){
+        menor = p->passada;
+        vencedor = p;
+      }
     }
+
+    // Escalona o vencedor e incrementa passada
+    p = vencedor;
+    p->passada = p->passada + p->passo;
+    if(p->pid != 1){
+      cprintf("\nProcesso vencedor: %d passada:%d\n", p->pid, p->passada);
+    }
+
+    // Switch to chosen process.  It is the process's job
+    // to release ptable.lock and then reacquire it
+    // before jumping back to us.
+    c->proc = p;
+    switchuvm(p);
+    p->state = RUNNING;
+
+    swtch(&(c->scheduler), p->context);
+    switchkvm();
+
+    // Process is done running for now.
+    // It should have changed its p->state before coming back.
+    c->proc = 0;
+
     release(&ptable.lock);
 
   }

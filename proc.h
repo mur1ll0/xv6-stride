@@ -50,6 +50,8 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   int tickets;                 // Quantidade de Tickets do processo
+  int passo;                   // Passo do processo
+  int passada;                 // Passada do processo no escalonador
 };
 
 // Process memory is laid out contiguously, low addresses first:
