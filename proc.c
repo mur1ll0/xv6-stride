@@ -90,10 +90,12 @@ found:
   p->pid = nextpid++;
   // Definir quantidade padrao de Tickets
   p->tickets = 50;
+  // Definir padrao de passada
+  p->passada = 0;
 
-  //Calcular passo do processo
-  p->passo = (10000/p->tickets);
-  p->passada = p->passo;
+  //Calcular passo do processo - na SYSPROC.c
+  //p->passo = (10000/p->tickets);
+  //p->passada = p->passo;
 
   release(&ptable.lock);
 
@@ -345,7 +347,7 @@ scheduler(void)
     // Loop over process table looking for process to run.
     menor = 10000;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
+      if(p->state != RUNNABLE || (p->passada == 0 && p->pid > 3))
         continue;
 
       //Seleciona processo com menor passada, em caso de empate seleciona processo no final da fila
@@ -359,7 +361,8 @@ scheduler(void)
     p = vencedor;
     p->passada = p->passada + p->passo;
     if(p->pid != 1){
-      cprintf("\nProcesso vencedor: %d passada:%d\n", p->pid, p->passada);
+      //cprintf("\nProcesso vencedor: %d passada:%d\n", p->pid, p->passada);
+      procdump();
     }
 
     // Switch to chosen process.  It is the process's job
