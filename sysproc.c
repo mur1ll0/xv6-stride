@@ -96,7 +96,11 @@ int sys_settickets(void)
   int n;
   if(argint(0, &n) < 0)
     return -1;
+
   myproc()->tickets = n;
+  //Calcular passo do processo
+  myproc()->passo = (10000/n);
+  myproc()->passada = myproc()->passo;
   return n;
 }
 

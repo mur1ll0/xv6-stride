@@ -8,17 +8,16 @@ int teste(int pid){
     for(j=0; j<200;j++){
       //printf(1, "Processo executando: %d\n", getpid());
       printf(1, ".");
-      //procdump();
     }
   }
 
   printf(1, "\nTERMINOU %d\n", getpid());
 
-  exit();
+  return pid;
 }
 
 int main(){
-  int numProc = 3;  //Definir numero de processos a serem alocados
+  int numProc = 10;  //Definir numero de processos a serem alocados
   int i, pid;
 
   for(i=0;i<numProc;i++){
@@ -38,4 +37,5 @@ int main(){
     }
     teste(pid);
   }
+  return 1;
 }
