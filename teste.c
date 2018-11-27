@@ -1,41 +1,44 @@
 #include "types.h"
 #include "user.h"
 
-int teste(int pid){
-  int i, j;
+float teste(int pid){
+  int i, j=0, r = 1;
 
-  for(i=0; i<5;i++){
-    for(j=0; j<200;j++){
-      //printf(1, "Processo executando: %d\n", getpid());
-      printf(1, ".");
-    }
+  for(i=1; i<=80000000;i++){
+    r = (i+r) * (666 + j) +5 - 2;
+    j++;
+    if(j < 80000000) i=1;
+    //i=1;
   }
-
-  printf(1, "\nTERMINOU %d\n", getpid());
-
-  return pid;
+  return r;
 }
 
 int main(){
-  int numProc = 10;  //Definir numero de processos a serem alocados
-  int i, pid;
+  int numProc = 5;  //Definir numero de processos a serem alocados
+  int i, pid, r;
 
   for(i=0;i<numProc;i++){
-    pid = fork();
 
-    if(pid < 4){
-      settickets(10);
+    if(i < 2){
+      pid = fork(10);
       printf(1, "Processo %d tem 10 tickets\n", getpid());
     }
-    else if(pid < 8){
-      settickets(200);
+    else if(i < 3){
+      pid = fork(200);
       printf(1, "Processo %d tem 200 tickets\n", getpid());
     }
     else{
-      settickets(1000);
+      pid = fork(1000);
       printf(1, "Processo %d tem 1000 tickets\n", getpid());
     }
-    teste(pid);
+    
+    if(pid <0) printf(1, "Falha ao forkar %d\n", getpid());
+    else if(pid >0) continue;
+    else {
+      r = teste(getpid());
+      printf(1, "\nTERMINOU %d - Resultado %d\n", getpid(), r);
+      break;
+    }
   }
-  return 1;
+  exit();
 }

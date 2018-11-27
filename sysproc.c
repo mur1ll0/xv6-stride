@@ -10,7 +10,10 @@
 int
 sys_fork(void)
 {
-  return fork();
+  int tickets;
+  if(argint(0, &tickets) < 0)
+    return -1;
+  return fork(tickets);
 }
 
 int
@@ -89,18 +92,3 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
-
-// Define a quantidade de tickets do processo por chamada de sistema
-int sys_settickets(void)
-{
-  int n;
-  if(argint(0, &n) < 0)
-    return -1;
-
-  myproc()->tickets = n;
-  //Calcular passo do processo
-  myproc()->passo = (10000/n);
-  myproc()->passada = myproc()->passo;
-  return n;
-}
-
