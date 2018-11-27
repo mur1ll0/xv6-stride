@@ -53,77 +53,78 @@ main(int argc, char *argv[])
   55:	56                   	push   %esi
   56:	e8 95 01 00 00       	call   1f0 <memset>
   5b:	83 c4 10             	add    $0x10,%esp
-    if(fork() > 0)
-  5e:	e8 17 03 00 00       	call   37a <fork>
-  63:	85 c0                	test   %eax,%eax
-  65:	0f 8f bf 00 00 00    	jg     12a <main+0x12a>
+    if(fork(50) > 0)
+  5e:	83 ec 0c             	sub    $0xc,%esp
+  61:	6a 32                	push   $0x32
+  63:	e8 12 03 00 00       	call   37a <fork>
+  68:	83 c4 10             	add    $0x10,%esp
+  6b:	85 c0                	test   %eax,%eax
+  6d:	0f 8f b7 00 00 00    	jg     12a <main+0x12a>
   for(i = 0; i < 4; i++)
-  6b:	83 c3 01             	add    $0x1,%ebx
-  6e:	83 fb 04             	cmp    $0x4,%ebx
-  71:	75 eb                	jne    5e <main+0x5e>
-  73:	bf 04 00 00 00       	mov    $0x4,%edi
+  73:	83 c3 01             	add    $0x1,%ebx
+  76:	83 fb 04             	cmp    $0x4,%ebx
+  79:	75 e3                	jne    5e <main+0x5e>
+  7b:	bf 04 00 00 00       	mov    $0x4,%edi
       break;
 
   printf(1, "write %d\n", i);
-  78:	83 ec 04             	sub    $0x4,%esp
-  7b:	53                   	push   %ebx
-  7c:	68 03 08 00 00       	push   $0x803
+  80:	83 ec 04             	sub    $0x4,%esp
+  83:	53                   	push   %ebx
+  84:	68 03 08 00 00       	push   $0x803
 
   path[8] += i;
   fd = open(path, O_CREATE | O_RDWR);
-  81:	bb 14 00 00 00       	mov    $0x14,%ebx
+  89:	bb 14 00 00 00       	mov    $0x14,%ebx
   printf(1, "write %d\n", i);
-  86:	6a 01                	push   $0x1
-  88:	e8 43 04 00 00       	call   4d0 <printf>
+  8e:	6a 01                	push   $0x1
+  90:	e8 3b 04 00 00       	call   4d0 <printf>
   path[8] += i;
-  8d:	89 f8                	mov    %edi,%eax
-  8f:	00 85 e6 fd ff ff    	add    %al,-0x21a(%ebp)
+  95:	89 f8                	mov    %edi,%eax
+  97:	00 85 e6 fd ff ff    	add    %al,-0x21a(%ebp)
   fd = open(path, O_CREATE | O_RDWR);
-  95:	5f                   	pop    %edi
-  96:	58                   	pop    %eax
-  97:	8d 85 de fd ff ff    	lea    -0x222(%ebp),%eax
-  9d:	68 02 02 00 00       	push   $0x202
-  a2:	50                   	push   %eax
-  a3:	e8 1a 03 00 00       	call   3c2 <open>
-  a8:	83 c4 10             	add    $0x10,%esp
-  ab:	89 c7                	mov    %eax,%edi
-  ad:	8d 76 00             	lea    0x0(%esi),%esi
+  9d:	5f                   	pop    %edi
+  9e:	58                   	pop    %eax
+  9f:	8d 85 de fd ff ff    	lea    -0x222(%ebp),%eax
+  a5:	68 02 02 00 00       	push   $0x202
+  aa:	50                   	push   %eax
+  ab:	e8 12 03 00 00       	call   3c2 <open>
+  b0:	83 c4 10             	add    $0x10,%esp
+  b3:	89 c7                	mov    %eax,%edi
+  b5:	8d 76 00             	lea    0x0(%esi),%esi
   for(i = 0; i < 20; i++)
 //    printf(fd, "%d\n", i);
     write(fd, data, sizeof(data));
-  b0:	83 ec 04             	sub    $0x4,%esp
-  b3:	68 00 02 00 00       	push   $0x200
-  b8:	56                   	push   %esi
-  b9:	57                   	push   %edi
-  ba:	e8 e3 02 00 00       	call   3a2 <write>
+  b8:	83 ec 04             	sub    $0x4,%esp
+  bb:	68 00 02 00 00       	push   $0x200
+  c0:	56                   	push   %esi
+  c1:	57                   	push   %edi
+  c2:	e8 db 02 00 00       	call   3a2 <write>
   for(i = 0; i < 20; i++)
-  bf:	83 c4 10             	add    $0x10,%esp
-  c2:	83 eb 01             	sub    $0x1,%ebx
-  c5:	75 e9                	jne    b0 <main+0xb0>
+  c7:	83 c4 10             	add    $0x10,%esp
+  ca:	83 eb 01             	sub    $0x1,%ebx
+  cd:	75 e9                	jne    b8 <main+0xb8>
   close(fd);
-  c7:	83 ec 0c             	sub    $0xc,%esp
-  ca:	57                   	push   %edi
-  cb:	e8 da 02 00 00       	call   3aa <close>
+  cf:	83 ec 0c             	sub    $0xc,%esp
+  d2:	57                   	push   %edi
+  d3:	e8 d2 02 00 00       	call   3aa <close>
 
   printf(1, "read\n");
-  d0:	58                   	pop    %eax
-  d1:	5a                   	pop    %edx
-  d2:	68 0d 08 00 00       	push   $0x80d
-  d7:	6a 01                	push   $0x1
-  d9:	e8 f2 03 00 00       	call   4d0 <printf>
+  d8:	58                   	pop    %eax
+  d9:	5a                   	pop    %edx
+  da:	68 0d 08 00 00       	push   $0x80d
+  df:	6a 01                	push   $0x1
+  e1:	e8 ea 03 00 00       	call   4d0 <printf>
 
   fd = open(path, O_RDONLY);
-  de:	59                   	pop    %ecx
-  df:	8d 85 de fd ff ff    	lea    -0x222(%ebp),%eax
-  e5:	5b                   	pop    %ebx
-  e6:	6a 00                	push   $0x0
-  e8:	50                   	push   %eax
-  e9:	bb 14 00 00 00       	mov    $0x14,%ebx
-  ee:	e8 cf 02 00 00       	call   3c2 <open>
-  f3:	83 c4 10             	add    $0x10,%esp
-  f6:	89 c7                	mov    %eax,%edi
-  f8:	90                   	nop
-  f9:	8d b4 26 00 00 00 00 	lea    0x0(%esi,%eiz,1),%esi
+  e6:	59                   	pop    %ecx
+  e7:	8d 85 de fd ff ff    	lea    -0x222(%ebp),%eax
+  ed:	5b                   	pop    %ebx
+  ee:	6a 00                	push   $0x0
+  f0:	50                   	push   %eax
+  f1:	bb 14 00 00 00       	mov    $0x14,%ebx
+  f6:	e8 c7 02 00 00       	call   3c2 <open>
+  fb:	83 c4 10             	add    $0x10,%esp
+  fe:	89 c7                	mov    %eax,%edi
   for (i = 0; i < 20; i++)
     read(fd, data, sizeof(data));
  100:	83 ec 04             	sub    $0x4,%esp
@@ -146,7 +147,7 @@ main(int argc, char *argv[])
   exit();
  125:	e8 58 02 00 00       	call   382 <exit>
  12a:	89 df                	mov    %ebx,%edi
- 12c:	e9 47 ff ff ff       	jmp    78 <main+0x78>
+ 12c:	e9 4f ff ff ff       	jmp    80 <main+0x80>
  131:	66 90                	xchg   %ax,%ax
  133:	66 90                	xchg   %ax,%ax
  135:	66 90                	xchg   %ax,%ax
@@ -694,12 +695,10 @@ SYSCALL(uptime)
  41a:	b8 0e 00 00 00       	mov    $0xe,%eax
  41f:	cd 40                	int    $0x40
  421:	c3                   	ret    
-
-00000422 <settickets>:
-SYSCALL(settickets)
- 422:	b8 16 00 00 00       	mov    $0x16,%eax
- 427:	cd 40                	int    $0x40
- 429:	c3                   	ret    
+ 422:	66 90                	xchg   %ax,%ax
+ 424:	66 90                	xchg   %ax,%ax
+ 426:	66 90                	xchg   %ax,%ax
+ 428:	66 90                	xchg   %ax,%ax
  42a:	66 90                	xchg   %ax,%ax
  42c:	66 90                	xchg   %ax,%ax
  42e:	66 90                	xchg   %ax,%ax
