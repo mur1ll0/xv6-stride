@@ -47,22 +47,22 @@ main(void)
   4b:	68 a8 07 00 00       	push   $0x7a8
   50:	6a 01                	push   $0x1
   52:	e8 29 04 00 00       	call   480 <printf>
-    pid = fork();
-  57:	e8 ce 02 00 00       	call   32a <fork>
+    pid = fork(50);
+  57:	c7 04 24 32 00 00 00 	movl   $0x32,(%esp)
+  5e:	e8 c7 02 00 00       	call   32a <fork>
     if(pid < 0){
-  5c:	83 c4 10             	add    $0x10,%esp
-  5f:	85 c0                	test   %eax,%eax
-    pid = fork();
-  61:	89 c3                	mov    %eax,%ebx
+  63:	83 c4 10             	add    $0x10,%esp
+  66:	85 c0                	test   %eax,%eax
+    pid = fork(50);
+  68:	89 c3                	mov    %eax,%ebx
     if(pid < 0){
-  63:	78 2c                	js     91 <main+0x91>
+  6a:	78 25                	js     91 <main+0x91>
       printf(1, "init: fork failed\n");
       exit();
     }
     if(pid == 0){
-  65:	74 3d                	je     a4 <main+0xa4>
-  67:	89 f6                	mov    %esi,%esi
-  69:	8d bc 27 00 00 00 00 	lea    0x0(%edi,%eiz,1),%edi
+  6c:	74 36                	je     a4 <main+0xa4>
+  6e:	66 90                	xchg   %ax,%ax
       exec("sh", argv);
       printf(1, "init: exec sh failed\n");
       exit();
@@ -657,12 +657,10 @@ SYSCALL(uptime)
  3ca:	b8 0e 00 00 00       	mov    $0xe,%eax
  3cf:	cd 40                	int    $0x40
  3d1:	c3                   	ret    
-
-000003d2 <settickets>:
-SYSCALL(settickets)
- 3d2:	b8 16 00 00 00       	mov    $0x16,%eax
- 3d7:	cd 40                	int    $0x40
- 3d9:	c3                   	ret    
+ 3d2:	66 90                	xchg   %ax,%ax
+ 3d4:	66 90                	xchg   %ax,%ax
+ 3d6:	66 90                	xchg   %ax,%ax
+ 3d8:	66 90                	xchg   %ax,%ax
  3da:	66 90                	xchg   %ax,%ax
  3dc:	66 90                	xchg   %ax,%ax
  3de:	66 90                	xchg   %ax,%ax
