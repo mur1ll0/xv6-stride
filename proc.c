@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "rand.h"
 
 struct {
   struct spinlock lock;
@@ -88,14 +89,6 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-  // Definir quantidade padrao de Tickets
-  p->tickets = 50;
-  // Definir padrao de passada
-  p->passada = 0;
-
-  //Calcular passo do processo - na SYSPROC.c
-  //p->passo = (10000/p->tickets);
-  //p->passada = p->passo;
 
   release(&ptable.lock);
 
@@ -186,7 +179,7 @@ growproc(int n)
 // Sets up stack to return as if from system call.
 // Caller must set state of returned proc to RUNNABLE.
 int
-fork(void)
+fork(int tickets)
 {
   int i, pid;
   struct proc *np;
@@ -215,6 +208,13 @@ fork(void)
     if(curproc->ofile[i])
       np->ofile[i] = filedup(curproc->ofile[i]);
   np->cwd = idup(curproc->cwd);
+
+  // Atribuir os tickets passados por parametro
+  np->tickets = tickets;
+  // Calcular passo do processo
+  np->passo = (10000/np->tickets);
+  np->passada = 0;
+
 
   safestrcpy(np->name, curproc->name, sizeof(curproc->name));
 
@@ -345,9 +345,9 @@ scheduler(void)
     vencedor = ptable.proc;
 
     // Loop over process table looking for process to run.
-    menor = 10000;
+    menor = 1000000;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE || (p->passada == 0 && p->pid > 3))
+      if(p->state != RUNNABLE)
         continue;
 
       //Seleciona processo com menor passada, em caso de empate seleciona processo no final da fila
@@ -359,11 +359,10 @@ scheduler(void)
 
     // Escalona o vencedor e incrementa passada
     p = vencedor;
-    p->passada = p->passada + p->passo;
-    if(p->pid != 1){
-      //cprintf("\nProcesso vencedor: %d passada:%d\n", p->pid, p->passada);
-      procdump();
+    if(p->pid > 2){
+      cprintf("\nProcesso vencedor: %d passada:%d + passo:%d\n", p->pid, p->passada, p->passo);
     }
+    p->passada = p->passada + p->passo;
 
     // Switch to chosen process.  It is the process's job
     // to release ptable.lock and then reacquire it
@@ -380,7 +379,6 @@ scheduler(void)
     c->proc = 0;
 
     release(&ptable.lock);
-
   }
 }
 
